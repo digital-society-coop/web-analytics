@@ -1,0 +1,28 @@
+name: deploy (dev)
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 runtime-dev
+      - run: ./deploy.sh dev
+        env:
+          SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          CLICKHOUSE_PASSWORD: ${{ secrets.CLICKHOUSE_PASSWORD }}
+          SMTP_HOST_ADDR: ${{ vars.SMTP_HOST_ADDR }}
+          SMTP_HOST_PORT: ${{ vars.SMTP_HOST_PORT }}
+          SMTP_EMAIL: ${{ vars.SMTP_EMAIL }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          RUNTIME_DOMAIN: ${{ vars.RUNTIME_DEV_DOMAIN }}
+          MAILER_EMAIL: ${{ vars.MAILER_EMAIL }}
