@@ -16,8 +16,8 @@ export SERVICE=web-analytics
 echo "Deploying $SERVICE-$environment... " >&2
 echo >&2
 
-export NAMESPACE="$SERVICE-$environment"
-export MANAGED_DOMAIN="$SERVICE-$environment.$RUNTIME_DOMAIN"
+export NAMESPACE="runtime"
+export MANAGED_DOMAIN="$SERVICE.$RUNTIME_DOMAIN"
 BASE64_SECRET=$(echo -n "$SECRET" | openssl base64 -A)
 BASE64_POSTGRES_PASSWORD=$(echo -n "$POSTGRES_PASSWORD" | openssl base64 -A)
 
